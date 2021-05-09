@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hget-instance
+  labels:
+    app: hget-instance
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hget-instance
+  template:
+    metadata:
+      labels:
+        app: hget-instance
+    spec:
+      containers:
+      - image: hget-instance:latest
+        imagePullPolicy: IfNotPresent
+        name: hget-instance
+        ports:
+        - containerPort: 8080
+          protocol: TCP

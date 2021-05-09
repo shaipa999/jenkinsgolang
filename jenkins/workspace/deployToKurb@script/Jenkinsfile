@@ -1,0 +1,37 @@
+pipeline {
+  agent any
+  stages 
+  {
+    stage("build") {
+      steps {
+        sh """
+          docker build -t hget-instance:latest .
+        """
+      }
+    }
+    stage("publish and run server deployment") {
+      steps {
+			withKubeConfig(caCertificate: '', credentialsId: '5') {
+		      sh 'kubectl apply -f ./server-deployment.yaml'
+                      sh 'kubectl apply -f ./hpa-deployment.yaml'
+                      
+		    }
+      }
+    }
+    stage("publish and run service deployment") {
+      steps {
+			withKubeConfig(caCertificate: '', credentialsId: '5') {
+		      sh 'kubectl apply -f ./service-deployment.yaml'
+		    }
+      }
+    }
+    stage("check") {
+      steps {
+                           withKubeConfig(caCertificate: '', credentialsId: '5') {
+		      sh 'kubectl get pods'
+		    }
+  
+      }
+    }
+  }
+}

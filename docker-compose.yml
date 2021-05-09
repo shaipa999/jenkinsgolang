@@ -1,0 +1,23 @@
+version: '3.7'
+services:
+  jenkinsvz:
+    build: .
+    privileged: true
+    user: root
+    ports:
+      - 8080:8080
+      - 50000:50000
+    container_name: jenkinsvz
+    expose:
+      - "8080"
+    volumes:
+      - ./jenkins:/var/jenkins_home
+      - ./jenkins-certs:/certs/client:ro
+      - /root/.minikube/profiles/minikube/:/root/.minikube/profiles/minikube/
+      - /root/.minikube/:/root/.minikube/
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - sec_network
+networks:
+  sec_network:
+    driver: bridge
